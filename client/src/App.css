@@ -1,0 +1,159 @@
+/* App.css */
+
+/* General body styling */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f5f7fa;
+}
+
+/* Header styling */
+h1 {
+  font-weight: 700;
+  margin: 0;
+  padding: 20px 0;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: linear-gradient(135deg, #4a90e2, #89c2ff);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+/* Container styling */
+.container {
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  max-width: 800px;
+}
+
+.container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Label styling */
+label.form-label {
+  font-weight: 600;
+  color: #334e68;
+}
+
+/* Input and select styling */
+input.form-control, 
+textarea.form-control, 
+select.form-select {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  transition: all 0.3s ease-in-out;
+  background-color: #f8f9fc;
+}
+
+input.form-control:focus, 
+textarea.form-control:focus, 
+select.form-select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 8px rgba(74, 144, 226, 0.5);
+}
+
+/* Textarea for article input */
+textarea.form-control {
+  resize: none;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #495057;
+}
+
+/* Button styling */
+button.btn-primary {
+  background-color: #4a90e2;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button.btn-primary:hover {
+  background-color: #357ac9;
+  transform: scale(1.05);
+}
+
+button.btn-secondary {
+  background-color: #f6a623;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button.btn-secondary:hover {
+  background-color: #e58b1c;
+  transform: scale(1.05);
+}
+
+/* Card styling */
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background: #f8f9fc;
+  margin-top: 20px;
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #334e68;
+}
+
+.card-text {
+  font-size: 16px;
+  color: #495057;
+}
+
+/* Word count styling */
+p.mb-0, 
+p.mt-3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #4a4a4a;
+}
+
+/* Footer styling */
+footer {
+  text-align: center;
+  padding: 15px 0;
+  background: linear-gradient(135deg, #4a90e2, #89c2ff);
+  color: white;
+  font-size: 14px;
+  margin-top: 30px;
+  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+}
+
+footer a {
+  color: #e9ecef;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+}

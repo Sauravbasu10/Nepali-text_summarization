@@ -4,8 +4,9 @@ import './App.css';
 
 const App = () => {
   const [text, setText] = useState('');
-  const [summarizedText, setSummarizedText] = useState('');
-  const [selectedModel, setSelectedModel] = useState('model1');
+  const [referenceSummary, setReferenceSummary] = useState('');
+  const [hypothesisSummary, setHypothesisSummary] = useState('');
+  const [rougeScores, setRougeScores] = useState(null);
   const [selectedLength, setSelectedLength] = useState('short');
   const [url, setUrl] = useState('');
 
@@ -14,27 +15,38 @@ const App = () => {
   };
 
   const handleUrlChange = (e) => {
-    const inputUrl = e.target.value;
-    setUrl(inputUrl);
+    setUrl(e.target.value);
     setText('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const requestBody = url
-      ? { url, selectedModel, selectedLength }
-      : { text, selectedModel, selectedLength };
-    const response = await fetch('/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    });
-    const data = await response.json();
-    console.log('Response data:', data);
-    setText(data.formatted_text);
-    setSummarizedText(data.summarized_text);
+      ? { url, selectedLength }
+      : { text, selectedLength };
+
+    try {
+      const response = await fetch('http://localhost:5000/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      setText(data.formatted_text);
+      setReferenceSummary(data.reference_summary);
+      setHypothesisSummary(data.hypothesis_summary);
+      setRougeScores(data.rouge_scores);
+    } catch (error) {
+      console.error('Error:', error);
+      setHypothesisSummary('Error occurred while summarizing');
+    }
   };
 
   return (
@@ -43,54 +55,16 @@ const App = () => {
         <h1 className="display-4">Nepali News Summarizer</h1>
       </div>
 
-      {/* Project Description */}
       <div className="container mb-4">
         <p className="text-center text-muted">
-          <strong>About the Project:</strong> This application summarizes Nepali news articles quickly and efficiently. 
-          Simply paste the article text or provide a URL, choose the summarization model and length, and get a concise summary in seconds.
+          <strong>About:</strong> Summarize Nepali news and compare mT5 summaries with Gemini references using ROUGE scores.
         </p>
       </div>
 
       <div className="container">
-        <div className="row mb-3 align-items-center">
-          <div className="col-md-5 d-flex justify-content-start">
-            <p className="mb-0">Input Text Word Count: {countWords(text)}</p>
-          </div>
-          <div className="col d-flex justify-content-end">
-            <div style={{ marginRight: 10 }}>
-              <label htmlFor="modelSelect" className="form-label">
-                Select Model
-              </label>
-              <select
-                id="modelSelect"
-                className="form-select"
-                value={selectedModel}
-                onChange={(e) => setSelectedModel(e.target.value)}
-              >
-                <option value="model1">mT5</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="lengthSelect" className="form-label">
-                Select Length
-              </label>
-              <select
-                id="lengthSelect"
-                className="form-select"
-                value={selectedLength}
-                onChange={(e) => setSelectedLength(e.target.value)}
-              >
-                <option value="short">Short</option>
-                <option value="long">Long</option>
-              </select>
-            </div>
-          </div>
-        </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="urlInput" className="form-label">
-              Enter URL:
-            </label>
+            <label htmlFor="urlInput" className="form-label">Enter URL:</label>
             <input
               type="text"
               id="urlInput"
@@ -98,7 +72,7 @@ const App = () => {
               placeholder="Enter URL here..."
               value={url}
               onChange={handleUrlChange}
-            ></input>
+            />
           </div>
           <div className="mb-3">
             <textarea
@@ -108,24 +82,80 @@ const App = () => {
               value={text}
               onChange={(e) => setText(e.target.value)}
             />
+            <p>Word Count: {countWords(text)}</p>
           </div>
-          <div className="d-flex justify-content-between">
-            <button type="submit" className="btn btn-primary">
-              Summarize
-            </button>
+          <div className="mb-3">
+            <label htmlFor="lengthSelect" className="form-label">Select Length</label>
+            <select
+              id="lengthSelect"
+              className="form-select"
+              value={selectedLength}
+              onChange={(e) => setSelectedLength(e.target.value)}
+            >
+              <option value="short">Short</option>
+              <option value="long">Long</option>
+            </select>
           </div>
+          <button type="submit" className="btn btn-primary">Summarize</button>
         </form>
-        {summarizedText && (
-          <div className="row mt-4">
-            <div className="col">
-              <div className="card">
+
+        {(referenceSummary || hypothesisSummary || rougeScores) && (
+          <div className="mt-4">
+            {referenceSummary && (
+              <div className="card mb-3">
                 <div className="card-body">
-                  <h5 className="card-title">Summarized Text:</h5>
-                  <p className="card-text">{summarizedText}</p>
+                  <h5 className="card-title">Reference Summary (Gemini)</h5>
+                  <p className="card-text">{referenceSummary}</p>
+                  <p>Word Count: {countWords(referenceSummary)}</p>
                 </div>
               </div>
-            </div>
-            <p className="mt-3">Summary Word Count: {countWords(summarizedText)}</p>
+            )}
+            {hypothesisSummary && (
+              <div className="card mb-3">
+                <div className="card-body">
+                  <h5 className="card-title">mT5 Summary</h5>
+                  <p className="card-text">{hypothesisSummary}</p>
+                  <p>Word Count: {countWords(hypothesisSummary)}</p>
+                </div>
+              </div>
+            )}
+            {rougeScores && (
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title">ROUGE Scores</h5>
+                  <table className="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Metric</th>
+                        <th>Precision</th>
+                        <th>Recall</th>
+                        <th>F1 Score</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>ROUGE-1</td>
+                        <td>{rougeScores.rouge1.precision.toFixed(4)}</td>
+                        <td>{rougeScores.rouge1.recall.toFixed(4)}</td>
+                        <td>{rougeScores.rouge1.fmeasure.toFixed(4)}</td>
+                      </tr>
+                      <tr>
+                        <td>ROUGE-2</td>
+                        <td>{rougeScores.rouge2.precision.toFixed(4)}</td>
+                        <td>{rougeScores.rouge2.recall.toFixed(4)}</td>
+                        <td>{rougeScores.rouge2.fmeasure.toFixed(4)}</td>
+                      </tr>
+                      <tr>
+                        <td>ROUGE-L</td>
+                        <td>{rougeScores.rougeL.precision.toFixed(4)}</td>
+                        <td>{rougeScores.rougeL.recall.toFixed(4)}</td>
+                        <td>{rougeScores.rougeL.fmeasure.toFixed(4)}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

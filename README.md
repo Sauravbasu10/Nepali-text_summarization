@@ -1,5 +1,5 @@
 # abstractive-news-summary-in-nepali
-Nepali News Summarizer using mT5 and mBART model.
+Nepali News Summarizer using mT5.
 # To run this application
 ```
 docker-compose up

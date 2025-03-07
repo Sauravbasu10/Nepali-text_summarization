@@ -1,2 +1,13 @@
-/env/
+# Node.js
 client/node_modules/
+client/package-lock.json
+
+# Python virtual environments
+7sem/
+.7sem/
+env/
+
+# Other ignores
+__pycache__/
+*.pyc
+fine_tuned_mt5_summarization_model/

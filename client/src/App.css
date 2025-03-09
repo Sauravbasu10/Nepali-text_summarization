@@ -1,159 +1,236 @@
-/* App.css */
+/* CSS Variables for Professional and Attractive Colors */
+:root {
+  --primary: #1e40af; /* Rich blue */
+  --secondary: #60a5fa; /* Bright sky blue */
+  --accent: #ea580c; /* Vivid orange */
+  --background: #f3f4f6; /* Light gray */
+  --card-bg: #ffffff;
+  --text: #111827; /* Dark gray */
+  --muted: #6b7280;
+  --hover-shadow: rgba(30, 64, 175, 0.2);
+  --dark-bg: #1f2937; /* Dark slate */
+  --dark-card-bg: #374151; /* Darker slate */
+  --dark-text: #ffffff; /* Pure white for dark mode text */
+}
 
-/* General body styling */
-body {
+/* Theme Switching */
+.app-wrapper.light {
+  background: linear-gradient(to bottom, var(--background), #e5e7eb);
+  color: var(--text);
+}
+
+.app-wrapper.dark {
+  background: linear-gradient(to bottom, var(--dark-bg), #374151);
+  color: var(--dark-text);
+}
+
+.app-wrapper.dark .app-header,
+.app-wrapper.dark .app-footer {
+  background: linear-gradient(135deg, var(--secondary), var(--primary));
+}
+
+.app-wrapper.dark .app-form,
+.app-wrapper.dark .app-card {
+  background: var(--dark-card-bg);
+}
+
+.app-wrapper.dark .app-input,
+.app-wrapper.dark .app-textarea,
+.app-wrapper.dark .app-select {
+  background: #4b5563;
+  color: var(--dark-text);
+  border-color: var(--secondary);
+}
+
+/* General Layout */
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   font-family: 'Poppins', sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f5f7fa;
+  transition: background 0.5s ease, color 0.5s ease;
 }
 
-/* Header styling */
-h1 {
-  font-weight: 700;
-  margin: 0;
-  padding: 20px 0;
-  text-transform: uppercase;
-  color: #ffffff;
-  background: linear-gradient(135deg, #4a90e2, #89c2ff);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
+/* Header */
+.app-header {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-bottom: 4px solid var(--accent);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
 }
 
-/* Container styling */
-.container {
-  margin: 0 auto;
-  padding: 30px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out;
-  max-width: 800px;
+.app-header:hover {
+  filter: brightness(1.1);
 }
 
-.container:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-
-/* Label styling */
-label.form-label {
-  font-weight: 600;
-  color: #334e68;
-}
-
-/* Input and select styling */
-input.form-control, 
-textarea.form-control, 
-select.form-select {
-  border-radius: 6px;
-  border: 1px solid #ced4da;
-  transition: all 0.3s ease-in-out;
-  background-color: #f8f9fc;
-}
-
-input.form-control:focus, 
-textarea.form-control:focus, 
-select.form-select:focus {
-  border-color: #4a90e2;
-  box-shadow: 0 0 8px rgba(74, 144, 226, 0.5);
-}
-
-/* Textarea for article input */
-textarea.form-control {
-  resize: none;
-  font-size: 16px;
-  line-height: 1.6;
-  color: #495057;
-}
-
-/* Button styling */
-button.btn-primary {
-  background-color: #4a90e2;
-  border: none;
-  font-size: 16px;
-  font-weight: 600;
-  padding: 12px 20px;
-  border-radius: 6px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-button.btn-primary:hover {
-  background-color: #357ac9;
-  transform: scale(1.05);
-}
-
-button.btn-secondary {
-  background-color: #f6a623;
-  border: none;
-  font-size: 16px;
-  font-weight: 600;
-  padding: 12px 20px;
-  border-radius: 6px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-button.btn-secondary:hover {
-  background-color: #e58b1c;
-  transform: scale(1.05);
-}
-
-/* Card styling */
-.card {
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  background: #f8f9fc;
-  margin-top: 20px;
-}
-
-.card-title {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  color: #334e68;
-}
-
-.card-text {
-  font-size: 16px;
-  color: #495057;
-}
-
-/* Word count styling */
-p.mb-0, 
-p.mt-3 {
-  font-size: 16px;
-  font-weight: 500;
-  color: #4a4a4a;
-}
-
-/* Footer styling */
-footer {
-  text-align: center;
-  padding: 15px 0;
-  background: linear-gradient(135deg, #4a90e2, #89c2ff);
+.app-theme-btn {
+  background: var(--accent);
   color: white;
-  font-size: 14px;
-  margin-top: 30px;
-  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  padding: 5px 15px;
+  transition: transform 0.2s ease, background 0.3s ease;
 }
 
-footer a {
-  color: #e9ecef;
-  text-decoration: none;
+.app-theme-btn:hover {
+  transform: scale(1.05);
+  background: #c2410c;
 }
 
-footer a:hover {
-  text-decoration: underline;
+/* About Section */
+.app-about {
+  color: var(--muted);
+  font-size: 1.1rem;
+  font-weight: 400;
 }
 
-/* Responsive styling */
-@media (max-width: 768px) {
-  .container {
-    padding: 20px;
-  }
+/* Form Styling */
+.app-form {
+  background: var(--card-bg);
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-  h1 {
-    font-size: 1.8rem;
-  }
+.app-form:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px var(--hover-shadow);
+}
+
+.app-input,
+.app-textarea,
+.app-select {
+  border: 1px solid var(--muted);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: #f9fafb;
+}
+
+.app-input:focus,
+.app-textarea:focus,
+.app-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 10px var(--hover-shadow);
+  transform: scale(1.01);
+}
+
+.app-textarea {
+  resize: none;
+  overflow: hidden;
+  min-height: 100px;
+}
+
+.app-btn {
+  background: var(--primary);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.app-btn:hover {
+  background: var(--secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px var(--hover-shadow);
+}
+
+/* Results and History Sections */
+.app-results .app-card,
+.app-history .app-card {
+  background: var(--card-bg);
+  border: none;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  border-left: 4px solid var(--primary);
+}
+
+.app-results .app-card:hover,
+.app-history .app-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px var(--hover-shadow);
+  border-left-color: var(--accent);
+}
+
+.app-card-title {
+  color: var(--primary);
+  transition: color 0.3s ease;
+}
+
+.app-card:hover .app-card-title {
+  color: var(--accent);
+}
+
+/* Table Styling */
+.app-table thead {
+  background: var(--primary);
+  color: white;
+}
+
+.app-table tbody tr:hover {
+  background: #e5e7eb;
+}
+
+.app-wrapper.dark .app-table tbody tr:hover {
+  background: #4b5563;
+}
+
+/* Footer */
+.app-footer {
+  background: var(--primary);
+  margin-top: auto;
+  transition: background 0.3s ease;
+}
+
+.app-footer:hover {
+  background: var(--secondary);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.app-results,
+.app-history {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Accessibility and Enhancements */
+.app-input::placeholder,
+.app-textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.app-wrapper.dark .app-input::placeholder,
+.app-wrapper.dark .app-textarea::placeholder {
+  color: #d1d5db;
+  opacity: 0.8;
+}
+
+.app-form label {
+  color: var(--text);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.app-wrapper.dark .app-form label {
+  color: var(--dark-text);
+}
+
+.app-form:hover label {
+  color: var(--primary);
+}
+
+.alert {
+  border-radius: 8px;
+}
+
+/* Performance Optimization */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -9,86 +9,133 @@ const App = () => {
   const [rougeScores, setRougeScores] = useState(null);
   const [selectedLength, setSelectedLength] = useState('short');
   const [url, setUrl] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState('');
+  const [theme, setTheme] = useState('light');
+  const [history, setHistory] = useState([]);
+  const textAreaRef = useRef(null);
 
-  const countWords = (str = '') => {
-    return str.split(/\s+/).filter(Boolean).length;
-  };
+  // Word count function
+  const countWords = (str = '') => str.split(/\s+/).filter(Boolean).length;
 
+  // Handle URL input
   const handleUrlChange = (e) => {
     setUrl(e.target.value);
     setText('');
+    setError('');
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const requestBody = url
-      ? { url, selectedLength }
-      : { text, selectedLength };
+    if (!url && !text) {
+      setError('Please enter a URL or text to summarize.');
+      return;
+    }
+    setIsProcessing(true);
+    setError('');
+
+    const requestBody = url ? { url, selectedLength } : { text, selectedLength };
 
     try {
       const response = await fetch('http://localhost:5000/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody),
       });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+      if (!response.ok) throw new Error('Network response was not ok');
 
       const data = await response.json();
-      setText(data.formatted_text);
+      setText(data.formatted_text || text);
       setReferenceSummary(data.reference_summary);
       setHypothesisSummary(data.hypothesis_summary);
       setRougeScores(data.rouge_scores);
+      setHistory((prev) => [
+        { text: data.formatted_text || text, referenceSummary: data.reference_summary, hypothesisSummary: data.hypothesis_summary, rougeScores: data.rouge_scores, timestamp: new Date().toLocaleString() },
+        ...prev.slice(0, 4),
+      ]);
     } catch (error) {
       console.error('Error:', error);
-      setHypothesisSummary('Error occurred while summarizing');
+      setError('Failed to summarize. Please try again.');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
+  // Theme toggle
+  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+
+  // Auto-resize textarea
+  useEffect(() => {
+    const textarea = textAreaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [text]);
+
+  // Clear input
+  const clearInput = () => {
+    setUrl('');
+    setText('');
+    setError('');
+  };
+
   return (
-    <>
-      <div className="col text-center mb-5">
-        <h1 className="display-4">Nepali News Summarizer</h1>
-      </div>
+    <div className={`app-wrapper ${theme}`}>
+      <header className="app-header text-center py-4 text-white shadow-sm">
+        <div className="d-flex justify-content-between align-items-center px-3">
+          <h1 className="display-4 fw-bold">Nepali News Summarizer</h1>
+          <button className="btn app-theme-btn" onClick={toggleTheme} aria-label="Toggle theme">
+            {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
+          </button>
+        </div>
+        <p className="lead mt-2">Summarize Nepali news with AI precision</p>
+      </header>
 
-      <div className="container mb-4">
-        <p className="text-center text-muted">
-          <strong>About:</strong> Summarize Nepali news and compare mT5 summaries with Gemini references using ROUGE scores.
-        </p>
-      </div>
+      <main className="container my-5">
+        <section className="app-about mb-5 text-center">
+          <p>
+            <strong>About:</strong> Powered by mT5 and Gemini, this tool summarizes Nepali news and evaluates results with ROUGE scores.
+          </p>
+        </section>
 
-      <div className="container">
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label htmlFor="urlInput" className="form-label">Enter URL:</label>
+        <form onSubmit={handleSubmit} className="app-form shadow-lg p-4 rounded">
+          <div className="mb-4">
+            <label htmlFor="urlInput" className="form-label fw-semibold">Enter News URL</label>
             <input
               type="text"
               id="urlInput"
-              className="form-control"
-              placeholder="Enter URL here..."
+              className="form-control form-control-lg app-input"
+              placeholder="Paste a news article URL..."
               value={url}
               onChange={handleUrlChange}
+              aria-describedby="urlHelp"
             />
+            <small id="urlHelp" className="form-text text-muted">Or paste text below.</small>
           </div>
-          <div className="mb-3">
+          <div className="mb-4">
+            <label htmlFor="textInput" className="form-label fw-semibold">Paste News Article</label>
             <textarea
-              className="form-control"
-              placeholder="Enter News Article to summarize..."
-              rows="8"
+              ref={textAreaRef}
+              id="textInput"
+              className="form-control app-textarea"
+              placeholder="Enter your news article here..."
               value={text}
               onChange={(e) => setText(e.target.value)}
+              aria-describedby="textHelp"
             />
-            <p>Word Count: {countWords(text)}</p>
+            <div className="d-flex justify-content-between mt-2">
+              <small className="text-muted">Word Count: {countWords(text)}</small>
+              <button type="button" className="btn btn-link p-0" onClick={clearInput}>Clear</button>
+            </div>
           </div>
-          <div className="mb-3">
-            <label htmlFor="lengthSelect" className="form-label">Select Length</label>
+          <div className="mb-4">
+            <label htmlFor="lengthSelect" className="form-label fw-semibold">Summary Length</label>
             <select
               id="lengthSelect"
-              className="form-select"
+              className="form-select app-select"
               value={selectedLength}
               onChange={(e) => setSelectedLength(e.target.value)}
             >
@@ -96,70 +143,91 @@ const App = () => {
               <option value="long">Long</option>
             </select>
           </div>
-          <button type="submit" className="btn btn-primary">Summarize</button>
+          {error && <div className="alert alert-danger" role="alert">{error}</div>}
+          <button type="submit" className="btn app-btn btn-lg w-100" disabled={isProcessing}>
+            {isProcessing ? (
+              <>
+                <span className="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+                Processing...
+              </>
+            ) : (
+              'Summarize Now'
+            )}
+          </button>
         </form>
 
         {(referenceSummary || hypothesisSummary || rougeScores) && (
-          <div className="mt-4">
+          <section className="app-results mt-5">
             {referenceSummary && (
-              <div className="card mb-3">
+              <div className="card app-card mb-4">
                 <div className="card-body">
-                  <h5 className="card-title">Reference Summary (Gemini)</h5>
+                  <h5 className="card-title app-card-title fw-bold">Reference Summary (Gemini)</h5>
                   <p className="card-text">{referenceSummary}</p>
-                  <p>Word Count: {countWords(referenceSummary)}</p>
+                  <small className="text-muted">Word Count: {countWords(referenceSummary)}</small>
                 </div>
               </div>
             )}
             {hypothesisSummary && (
-              <div className="card mb-3">
+              <div className="card app-card mb-4">
                 <div className="card-body">
-                  <h5 className="card-title">mT5 Summary</h5>
+                  <h5 className="card-title app-card-title fw-bold">mT5 Summary</h5>
                   <p className="card-text">{hypothesisSummary}</p>
-                  <p>Word Count: {countWords(hypothesisSummary)}</p>
+                  <small className="text-muted">Word Count: {countWords(hypothesisSummary)}</small>
                 </div>
               </div>
             )}
             {rougeScores && (
-              <div className="card">
+              <div className="card app-card">
                 <div className="card-body">
-                  <h5 className="card-title">ROUGE Scores</h5>
-                  <table className="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>Metric</th>
-                        <th>Precision</th>
-                        <th>Recall</th>
-                        <th>F1 Score</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>ROUGE-1</td>
-                        <td>{rougeScores.rouge1.precision.toFixed(4)}</td>
-                        <td>{rougeScores.rouge1.recall.toFixed(4)}</td>
-                        <td>{rougeScores.rouge1.fmeasure.toFixed(4)}</td>
-                      </tr>
-                      <tr>
-                        <td>ROUGE-2</td>
-                        <td>{rougeScores.rouge2.precision.toFixed(4)}</td>
-                        <td>{rougeScores.rouge2.recall.toFixed(4)}</td>
-                        <td>{rougeScores.rouge2.fmeasure.toFixed(4)}</td>
-                      </tr>
-                      <tr>
-                        <td>ROUGE-L</td>
-                        <td>{rougeScores.rougeL.precision.toFixed(4)}</td>
-                        <td>{rougeScores.rougeL.recall.toFixed(4)}</td>
-                        <td>{rougeScores.rougeL.fmeasure.toFixed(4)}</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <h5 className="card-title app-card-title fw-bold">ROUGE Scores</h5>
+                  <div className="table-responsive">
+                    <table className="table table-striped table-hover app-table">
+                      <thead>
+                        <tr>
+                          <th>Metric</th>
+                          <th>Precision</th>
+                          <th>Recall</th>
+                          <th>F1 Score</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {['rouge1', 'rouge2', 'rougeL'].map((key) => (
+                          <tr key={key}>
+                            <td>{key.toUpperCase().replace('ROUGE', 'ROUGE-')}</td>
+                            <td>{rougeScores[key].precision.toFixed(4)}</td>
+                            <td>{rougeScores[key].recall.toFixed(4)}</td>
+                            <td>{rougeScores[key].fmeasure.toFixed(4)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             )}
-          </div>
+          </section>
         )}
-      </div>
-    </>
+
+        {history.length > 0 && (
+          <section className="app-history mt-5">
+            <h3 className="fw-bold mb-4">Recent Summaries</h3>
+            {history.map((item, index) => (
+              <div key={index} className="card app-card mb-3">
+                <div className="card-body">
+                  <p className="card-text"><strong>Time:</strong> {item.timestamp}</p>
+                  <p className="card-text"><strong>Input:</strong> {item.text.slice(0, 100)}...</p>
+                  <p className="card-text"><strong>mT5 Summary:</strong> {item.hypothesisSummary}</p>
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+      </main>
+
+      <footer className="app-footer text-center py-3 text-white">
+        <small>© 2025 Nepali News Summarizer. Powered by xAI.</small>
+      </footer>
+    </div>
   );
 };
 

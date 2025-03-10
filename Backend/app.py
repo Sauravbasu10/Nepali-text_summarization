@@ -14,6 +14,8 @@ from Scrapper.ratopati import RatopatiScraper
 from Scrapper.setopati import SetopatiScraper
 from Scrapper.gorkhapatra import GorkhapatraScraper
 import logging
+import time
+
 
 # Initialize the Flask app and enable CORS
 app = Flask(__name__)
@@ -26,7 +28,7 @@ logger = logging.getLogger(__name__)
 # Load environment variables from .env file
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyDKgHQ74jizmvOWRypFkkSdU2N1Y3X3raY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyDD3loDGPKdz9_JjgQr7p22ZSyv5WRHJAc")
 
 if not API_KEY:
     raise ValueError("API_KEY not found in environment variables")
@@ -203,6 +205,54 @@ def calculate_rouge_scores(reference, hypothesis):
         }
     }
 
+
+@app.route('/', methods=['GET', 'POST', 'OPTIONS'])
+def summarize():
+    if request.method == 'OPTIONS':
+        # Handle preflight request
+        response = jsonify({"status": "OK"})
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        return response, 204
+
+    if request.method == 'GET':
+        return jsonify({"error": "This endpoint only supports POST requests."}), 405
+
+    if request.method == 'POST':
+        start_time = time.time()  # Start measuring time
+        data = request.json
+        if not data:
+            return jsonify({"error": "Invalid JSON format"}), 400
+        text = data.get('text', '')
+        given_url = data.get('url', '')
+        selected_length = data.get('selectedLength')
+        if not selected_length:
+            return jsonify({"error": "Missing required parameter: selectedLength"}), 400
+        if given_url:
+            text = get_newsfrom_url(given_url)
+        formatted_text = format_paragraph(text)
+        try:
+            reference_summary = geminiReferenceSummary(formatted_text)
+            if selected_length == 'short':
+                hypothesis_summary = mt5Summary(formatted_text, model, tokenizer)
+            elif selected_length == 'long':
+                hypothesis_summary = summary_nepali(formatted_text, model, tokenizer)
+            else:
+                return jsonify({"error": "Invalid length"}), 400
+            rouge_scores = calculate_rouge_scores(reference_summary, hypothesis_summary)
+            end_time = time.time()  # End measuring time
+            processing_time = end_time - start_time  # Calculate total time
+            return jsonify({
+                'reference_summary': reference_summary,
+                'hypothesis_summary': hypothesis_summary,
+                'formatted_text': formatted_text,
+                'rouge_scores': rouge_scores,
+                'processing_time': processing_time  # Include processing time in response
+            })
+        except Exception as e:
+            logger.error(f"Error during processing: {str(e)}")
+            return jsonify({"error": f"Error during processing: {str(e)}"}), 500
 # @app.route('/', methods=['GET', 'POST', 'OPTIONS'])
 # def summarize():
 #     if request.method == 'OPTIONS':
@@ -229,19 +279,13 @@ def calculate_rouge_scores(reference, hypothesis):
 #             text = get_newsfrom_url(given_url)
 #         formatted_text = format_paragraph(text)
 #         try:
+#             reference_summary = geminiReferenceSummary(formatted_text)
 #             if selected_length == 'short':
 #                 hypothesis_summary = mt5Summary(formatted_text, model, tokenizer)
 #             elif selected_length == 'long':
 #                 hypothesis_summary = summary_nepali(formatted_text, model, tokenizer)
 #             else:
 #                 return jsonify({"error": "Invalid length"}), 400
-            
-#             # Calculate the word count of the mT5-generated summary
-#             hypothesis_word_count = len(hypothesis_summary.split())
-            
-#             # Generate the reference summary with a similar word count
-#             reference_summary = geminiReferenceSummary(formatted_text, hypothesis_word_count)
-            
 #             rouge_scores = calculate_rouge_scores(reference_summary, hypothesis_summary)
 #             return jsonify({
 #                 'reference_summary': reference_summary,
@@ -252,51 +296,6 @@ def calculate_rouge_scores(reference, hypothesis):
 #         except Exception as e:
 #             logger.error(f"Error during processing: {str(e)}")
 #             return jsonify({"error": f"Error during processing: {str(e)}"}), 500
-        
-# Route to handle POST requests with OPTIONS support
-@app.route('/', methods=['GET', 'POST', 'OPTIONS'])
-def summarize():
-    if request.method == 'OPTIONS':
-        # Handle preflight request
-        response = jsonify({"status": "OK"})
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-        return response, 204
-    
-    if request.method == 'GET':
-        return jsonify({"error": "This endpoint only supports POST requests."}), 405
-    
-    if request.method == 'POST':
-        data = request.json
-        if not data:
-            return jsonify({"error": "Invalid JSON format"}), 400
-        text = data.get('text', '')
-        given_url = data.get('url', '')
-        selected_length = data.get('selectedLength')
-        if not selected_length:
-            return jsonify({"error": "Missing required parameter: selectedLength"}), 400
-        if given_url:
-            text = get_newsfrom_url(given_url)
-        formatted_text = format_paragraph(text)
-        try:
-            reference_summary = geminiReferenceSummary(formatted_text)
-            if selected_length == 'short':
-                hypothesis_summary = mt5Summary(formatted_text, model, tokenizer)
-            elif selected_length == 'long':
-                hypothesis_summary = summary_nepali(formatted_text, model, tokenizer)
-            else:
-                return jsonify({"error": "Invalid length"}), 400
-            rouge_scores = calculate_rouge_scores(reference_summary, hypothesis_summary)
-            return jsonify({
-                'reference_summary': reference_summary,
-                'hypothesis_summary': hypothesis_summary,
-                'formatted_text': formatted_text,
-                'rouge_scores': rouge_scores
-            })
-        except Exception as e:
-            logger.error(f"Error during processing: {str(e)}")
-            return jsonify({"error": f"Error during processing: {str(e)}"}), 500
 
 if __name__ == "__main__":
     try:

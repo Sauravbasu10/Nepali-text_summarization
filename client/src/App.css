@@ -1,45 +1,56 @@
 /* CSS Variables for Professional and Attractive Colors */
 :root {
-  --primary: #1e40af; /* Rich blue */
-  --secondary: #60a5fa; /* Bright sky blue */
-  --accent: #ea580c; /* Vivid orange */
-  --background: #f3f4f6; /* Light gray */
-  --card-bg: #ffffff;
-  --text: #111827; /* Dark gray */
-  --muted: #6b7280;
-  --hover-shadow: rgba(30, 64, 175, 0.2);
-  --dark-bg: #1f2937; /* Dark slate */
-  --dark-card-bg: #374151; /* Darker slate */
-  --dark-text: #ffffff; /* Pure white for dark mode text */
+  --primary: #848484; /* Warm cream color for an elegant, soft touch */
+  --secondary: #8eb4ab; /* Subtle golden tone for a harmonious palette */
+  --accent: #FF6F61; /* Soft coral accent for contrast */
+  --background: #F5F5F5; /* Light grayish-white color for light mode */
+  --card-bg: #FFFFFF; /* White for a clean and minimalistic look */
+  --text: #333333; /* Dark gray for readability in light mode */
+  --muted: #A0A0A0; /* Muted gray for subtle elements */
+  --hover-shadow: rgba(197, 206, 223, 0.2); /* Soft shadow for hover effects */
+  --dark-bg: #000000; /* Full black background for dark mode */
+  --dark-card-bg: #333333; /* Dark grey card background */
+  --dark-text: #FFFFFF; /* Pure white text for dark mode */
+  --dark-muted: #B0B0B0; /* Muted gray for dark mode */
+  --primary-light: #f7f7f7; /* Light background */
+  --primary-dark: #1e1e1e;  /* Dark background for dark mode */
+  --text-light: #333333;    /* Light text color (matches --text) */
+  --text-dark: #f5f5f5;     /* Dark text color for dark mode */
+  --card-bg-light: #fff;    /* Light card background (matches --card-bg) */
+  --card-bg-dark: #333333;  /* Dark card background (matches --dark-card-bg) */
+  --input-bg-light: #fff;   /* Light input background */
+  --input-bg-dark: #444;    /* Dark input background */
+  --button-bg-light: #007bff; /* Light button background */
+  --button-bg-dark: #0056b3; /* Dark button background */
+  --border-light: #ddd;     /* Light border */
+  --border-dark: #555;      /* Dark border */
+  --hover-shadow-light: rgba(0, 0, 0, 0.1); /* Light hover shadow */
+  --hover-shadow-dark: rgba(255, 255, 255, 0.1); /* Dark hover shadow */
 }
 
 /* Theme Switching */
 .app-wrapper.light {
-  background: linear-gradient(to bottom, var(--background), #e5e7eb);
+  background: var(--background);
   color: var(--text);
 }
 
 .app-wrapper.dark {
-  background: linear-gradient(to bottom, var(--dark-bg), #374151);
+  background: var(--dark-bg);
   color: var(--dark-text);
+}
+
+.app-wrapper.dark * {
+  color: var(--dark-text) !important;
 }
 
 .app-wrapper.dark .app-header,
 .app-wrapper.dark .app-footer {
-  background: linear-gradient(135deg, var(--secondary), var(--primary));
+  background: var(--primary);
 }
 
 .app-wrapper.dark .app-form,
 .app-wrapper.dark .app-card {
   background: var(--dark-card-bg);
-}
-
-.app-wrapper.dark .app-input,
-.app-wrapper.dark .app-textarea,
-.app-wrapper.dark .app-select {
-  background: #4b5563;
-  color: var(--dark-text);
-  border-color: var(--secondary);
 }
 
 /* General Layout */
@@ -53,36 +64,35 @@
 
 /* Header */
 .app-header {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: var(--primary);
   border-bottom: 4px solid var(--accent);
   position: sticky;
   top: 0;
   z-index: 1000;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .app-header:hover {
   filter: brightness(1.1);
 }
 
+/* Theme Button */
 .app-theme-btn {
   background: var(--accent);
   color: white;
   border-radius: 20px;
-  padding: 5px 15px;
+  padding: 8px 18px;
+  font-size: 1rem;
   transition: transform 0.2s ease, background 0.3s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .app-theme-btn:hover {
   transform: scale(1.05);
-  background: #c2410c;
-}
-
-/* About Section */
-.app-about {
-  color: var(--muted);
-  font-size: 1.1rem;
-  font-weight: 400;
+  background: #F44336; /* Vibrant red for hover */
 }
 
 /* Form Styling */
@@ -90,6 +100,8 @@
   background: var(--card-bg);
   border-radius: 12px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 20px;
+  box-shadow: 0 4px 10px var(--hover-shadow-light);
 }
 
 .app-form:hover {
@@ -103,7 +115,14 @@
   border: 1px solid var(--muted);
   border-radius: 8px;
   transition: all 0.3s ease;
-  background: #f9fafb;
+  background: #F9F9F9;
+  padding: 12px;
+}
+
+.app-wrapper.dark .app-input,
+.app-wrapper.dark .app-textarea,
+.app-wrapper.dark .app-select {
+  color: #000000 !important;
 }
 
 .app-input:focus,
@@ -120,6 +139,7 @@
   min-height: 100px;
 }
 
+/* Button Styling */
 .app-btn {
   background: var(--primary);
   border: none;
@@ -127,7 +147,9 @@
   padding: 12px 24px;
   font-weight: 600;
   color: white;
+  font-size: 1rem;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .app-btn:hover {
@@ -136,44 +158,20 @@
   box-shadow: 0 8px 16px var(--hover-shadow);
 }
 
-/* Results and History Sections */
-.app-results .app-card,
-.app-history .app-card {
-  background: var(--card-bg);
-  border: none;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  border-left: 4px solid var(--primary);
-}
-
-.app-results .app-card:hover,
-.app-history .app-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 24px var(--hover-shadow);
-  border-left-color: var(--accent);
-}
-
-.app-card-title {
-  color: var(--primary);
-  transition: color 0.3s ease;
-}
-
-.app-card:hover .app-card-title {
-  color: var(--accent);
-}
-
-/* Table Styling */
-.app-table thead {
-  background: var(--primary);
+/* Clear Button Styling */
+.btn-clear {
+  background: var(--accent);
   color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
 }
 
-.app-table tbody tr:hover {
-  background: #e5e7eb;
-}
-
-.app-wrapper.dark .app-table tbody tr:hover {
-  background: #4b5563;
+.btn-clear:hover {
+  background: #F44336; /* Vibrant red for clear button hover */
+  transform: scale(1.05);
 }
 
 /* Footer */
@@ -187,50 +185,236 @@
   background: var(--secondary);
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.app-results,
-.app-history {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-/* Accessibility and Enhancements */
-.app-input::placeholder,
-.app-textarea::placeholder {
-  color: var(--muted);
-  opacity: 0.7;
-}
-
-.app-wrapper.dark .app-input::placeholder,
-.app-wrapper.dark .app-textarea::placeholder {
-  color: #d1d5db;
-  opacity: 0.8;
-}
-
-.app-form label {
+/* Navbar Branding */
+.navbar-brand {
+  font-size: 2rem; /* Increase the font size of the brand text */
+  font-weight: bold;
   color: var(--text);
-  font-weight: 500;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-.app-wrapper.dark .app-form label {
-  color: var(--dark-text);
+.navbar-brand img {
+  height: 50px; /* Adjust the logo height */
+  width: auto;  /* Maintain aspect ratio */
+  transition: transform 0.3s ease;
 }
 
-.app-form:hover label {
-  color: var(--primary);
+/* Logo Hover Effect */
+.navbar-brand:hover {
+  color: var(--accent);
+  transform: scale(1.05);
 }
 
-.alert {
+/* Navbar Links */
+.navbar-nav .nav-link {
+  font-size: 1.3rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  color: var(--text);
+  transition: color 0.3s ease, transform 0.3s ease;
+  padding: 12px 20px;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  transform: scale(1.05);
+}
+
+/* Navbar */
+.navbar {
+  background-color: var(--background);
+  padding: 1rem 2rem;
+  font-family: 'Poppins', sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+.app-wrapper.dark .navbar,
+.app-wrapper.dark .navbar-light {
+  background-color: var(--dark-card-bg) !important;
+}
+
+/* Center Navbar Links */
+.navbar-collapse {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.navbar-nav {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.navbar-nav .nav-item {
+  margin-left: 20px;
+}
+
+/* Project Members Section */
+.project-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Member Card Styles */
+.member-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  border: 1px solid var(--border-light);
   border-radius: 8px;
+  background-color: var(--card-bg-light);
+  width: 250px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px var(--hover-shadow-light);
 }
 
-/* Performance Optimization */
-* {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.app-wrapper.dark .member-card {
+  border: 1px solid var(--border-dark);
+  background-color: var(--dark-card-bg);
+}
+
+.member-card:hover {
+  box-shadow: 0px 4px 10px var(--hover-shadow-light);
+  transform: translateY(-5px);
+}
+
+.app-wrapper.dark .member-card:hover {
+  box-shadow: 0px 4px 10px var(--hover-shadow-dark);
+}
+
+/* Member Image Style */
+.member-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+/* Member Info Styling */
+.member-info h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.member-info p {
+  margin: 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Feedback Form Styles */
+.feedback-form {
+  background-color: var(--card-bg-light);
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px var(--hover-shadow-light);
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.app-wrapper.dark .feedback-form {
+  background-color: var(--dark-card-bg);
+  box-shadow: 0 2px 5px var(--hover-shadow-dark);
+}
+
+/* Feedback Form Input/Textarea */
+.feedback-form input,
+.feedback-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 5px;
+  margin-top: 10px;
+  background-color: var(--input-bg-light);
+}
+
+.app-wrapper.dark .feedback-form input,
+.app-wrapper.dark .feedback-form textarea {
+  background-color: var(--input-bg-dark);
+  border: 1px solid var(--border-dark);
+  color: #000000 !important;
+}
+
+/* Feedback Form Button */
+.feedback-form button {
+  margin-top: 15px;
+  padding: 12px 20px;
+  background-color: var(--button-bg-light);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.app-wrapper.dark .feedback-form button {
+  background-color: var(--button-bg-dark);
+}
+
+/* Feedback Button Hover */
+.feedback-form button:hover {
+  background-color: #0056b3;
+}
+
+.app-wrapper.dark .feedback-form button:hover {
+  background-color: #004080;
+}
+
+/* Success Message Styling */
+.alert-success {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #d4edda;
+  border-radius: 5px;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.app-wrapper.dark .alert-success {
+  background-color: #6c757d;
+  color: var(--dark-text);
+  border: 1px solid #5a6268;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .about-container {
+    padding: 20px;
+    max-width: none;
+  }
+
+  .about-container h2 {
+    font-size: 1.75rem;
+  }
+
+  .about-container h3 {
+    font-size: 1.25rem;
+  }
+
+  .about-container p,
+  .about-container ul.list-unstyled li {
+    font-size: 0.9rem;
+  }
+
+  .contact-container {
+    padding: 20px;
+  }
+
+  .member-card {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .feedback-form {
+    max-width: 100%;
+    padding: 15px;
+  }
 }

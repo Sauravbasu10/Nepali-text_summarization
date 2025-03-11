@@ -20,13 +20,8 @@ const About = () => {
         <li> • Summarizes Nepali news articles from URLs or pasted text using mT5.</li>
         <li> • Offers short and long summary options based on user preference.</li>
         <li> • Evaluates summaries with ROUGE metrics, comparing against Gemini AI outputs.</li>
-        <li> • Displays processing time and recent summary history for user convenience.</li>
-        <li> • Supports multi-dialect summarization to handle regional language variations in Nepali.</li>
-        <li> • Provides key detail highlighting to ensure critical information is retained in summaries.</li>
-        <li> • Allows users to adjust summary tone (e.g., formal or neutral) for different audiences.</li>
-        <li> • Offers multilingual output options, translating summaries into English or other languages.</li>
+        <li> • Displays processing time and recent summary history for user convenience.</li>    
         <li> • Includes a feedback system for users to rate summary quality, aiding model improvement.</li>
-        <li> • Enables batch processing of multiple articles for efficient summarization of news feeds.</li>
       </ul>
 
       <h3>Technologies Used:</h3>
@@ -36,7 +31,7 @@ const About = () => {
         <li> • Gemini AI for generating reference summaries.</li>
         <li> • Extractor API for news content extraction from URLs.</li>
         <li> • Python Flask for backend summarization services.</li>
-        <li> • Bootstrap for modern and consistent UI styling.</li>
+        <li> • Bootstrap and CSS for modern and consistent UI styling.</li>
       </ul>
 
       <h3>Challenges:</h3>

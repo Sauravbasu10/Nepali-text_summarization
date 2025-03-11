@@ -172,7 +172,7 @@ const App = () => {
               <>
                 <section className="app-about mb-5 text-center">
                   <p>
-                    <strong>About:</strong> Powered by mT5 and Gemini, this tool summarizes Nepali news and evaluates results with ROUGE scores.
+                    <strong>"Sum It Up with MT5" </strong>
                   </p>
                 </section>
                 <form onSubmit={handleSubmit} className="app-form shadow-lg p-4 rounded">
@@ -315,7 +315,7 @@ const App = () => {
         </main>
 
         <footer className="app-footer text-center py-3 text-white">
-          <small>© 2025 Nepali News Summarizer. Powered by xAI.</small>
+          <small>© 2025 Nepali News Summarizer</small>
         </footer>
       </div>
     </Router>

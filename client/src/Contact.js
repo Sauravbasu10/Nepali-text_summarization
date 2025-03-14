@@ -31,28 +31,28 @@ const Contact = () => {
       <h3>Project Members:</h3>
       <div className="project-members">
         <div className="member-card">
-          <img src="https://randomuser.me/api/portraits/men/11.jpg" alt="Praful Man Thaku" className="member-image" />
+          <img src="\praful.jpg" alt="Praful Man Thaku" className="member-image" />
           <div className="member-info">
             <h4>Praful Man Thaku</h4>
             <p>Frontend Developer</p>
           </div>
         </div>
         <div className="member-card">
-          <img src="https://randomuser.me/api/portraits/women/21.jpg" alt="Rockey Shrestha" className="member-image" />
+          <img src="\rocky.jpg" alt="Rockey Shrestha" className="member-image" />
           <div className="member-info">
             <h4>Rockey Shrestha</h4>
             <p>Backend Developer</p>
           </div>
         </div>
         <div className="member-card">
-          <img src="https://randomuser.me/api/portraits/men/35.jpg" alt="Saurav Basukala" className="member-image" />
+          <img src="\saurav.jpg" alt="Saurav Basukala" className="member-image" />
           <div className="member-info">
             <h4>Saurav Basukala</h4>
             <p>AI Researcher</p>
           </div>
         </div>
         <div className="member-card">
-          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sohan Basnet" className="member-image" />
+          <img src="\sohan.jpg" alt="Sohan Basnet" className="member-image" />
           <div className="member-info">
             <h4>Sohan Basnet</h4>
             <p>Project Manager</p>
@@ -62,7 +62,7 @@ const Contact = () => {
 
       <h4>Contact Information:</h4>
       <ul>
-        <li><strong>Email:</strong> basukalas11@gmail.com</li>
+        <li><strong>Email:</strong><a href="mailto:praful.thaku@gmail.com" >praful.thaku@gmail.com</a>, <a href="mailto:basukalas11@gmail.com" >basukalas11@gmail.com</a>, <a href="mailto:rockeyshrestha4@gmail.com" >rockeyshrestha4@gmail.com</a>, <a href="mailto:sohanb78922@gmail.com@gmail.com">sohanb78922@gmail.com</a> </li>
         <li><strong>Phone:</strong> +977 123 456 789</li>
         <li><strong>GitHub:</strong> <a href="https://github.com/Sauravbasu10/Nepali-text_summarization" target="_blank" rel="noopener noreferrer">https://github.com/Sauravbasu10/Nepali-text_summarization</a></li>
       </ul>
